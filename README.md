@@ -11,9 +11,9 @@ Put the skeleton in a git repo. Before testing it, make sure to at least `git ad
 
     codger skeleton path/to/your-repo-name --test
 
-Now, to generate code inside the current working directory, do
+Now, to create a new folder based on the skeleton:
 
-    codger gen your-repo-name
+    codger create your-repo-name new-project-name
 
 Here's how the skeleton repo will be used:
 
