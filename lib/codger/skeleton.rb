@@ -44,7 +44,7 @@ module Codger
 
     # Perform code generation using the process outlined in the class documentation.
     def generate
-      @to_copy = @git.ls_files.keys - ['README', 'README.md', 'README.markdown', 'generate.rb']
+      @to_copy = @git.ls_files.keys - ['README', 'README.md', 'README.markdown', 'generate.rb', '.gitignore']
 
       code_path = src_path('generate.rb')
       if File.exists?(code_path)

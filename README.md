@@ -19,7 +19,7 @@ Here's how the skeleton repo will be used:
 
 1. If there is a script named `generate.rb` in the root directory, it will be run.
 2. Files ending in `.erb` will be [interpolated](http://ruby-doc.org/stdlib-1.9.3/libdoc/erb/rdoc/ERB.html) and written to the target directory.
-3. Other files will be copied directly to the target directory. (Exceptions: README, README.md, README.markdown)
+3. Other files will be copied directly to the target directory. (Exceptions: README, README.md, README.markdown, .gitignore)
 
 ### Parameters
 
