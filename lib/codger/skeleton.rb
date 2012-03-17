@@ -17,6 +17,7 @@ module Codger
   #
   # Methods for use in generate.rb and templates:
   # * #src_path
+  # * #cancel
   # * #copy
   # * #interpolate
   # * #ignore
@@ -104,12 +105,15 @@ module Codger
       end
 
       mappings.each do |src, dest|
-        @current_template_src = src
-        @current_template_dest = dest
-        template = ERB.new(File.read(src_path(src)), nil, '-')
-        ensure_folder @current_template_dest
-        result = template.result(binding)
-        File.write dest_path(@current_template_dest), result
+        begin
+          @current_template_src = src
+          @current_template_dest = dest
+          template = ERB.new(File.read(src_path(src)), nil, '-')
+          ensure_folder @current_template_dest
+          result = template.result(binding)
+          File.write dest_path(@current_template_dest), result
+        rescue CancelInterpolation
+        end
         @to_copy.delete src
       end
     end
@@ -119,6 +123,11 @@ module Codger
     # relative to the template's folder.
     def rename(dest)
       @current_template_dest = File.join(File.dirname(@current_template_src), dest)
+    end
+
+    # Stop interpolation of the current template.
+    def cancel
+      raise CancelInterpolation.new
     end
 
     # For each path or array of paths, disable implicit copying.
@@ -134,4 +143,6 @@ module Codger
       end
     end
   end
+
+  class CancelInterpolation < StandardError; end
 end

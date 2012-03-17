@@ -32,6 +32,7 @@ The first time a prompt is given, the skeleton repo's README will be printed (if
 * In a template, you can use `<%- rename "relative_path" -%>` to override the output file name.
 * Use `copy "path1", "path2"` to copy files "path1" and "path2" (relative the skeleton repo's root directory) into the target directory directly. Use `copy "path1" => "newpath1"` to override the destination path in the target directory.
 * Use `interpolate "path1", "path2"` to interpolate ERB files "path1" and "path2" into the target directory. As with `copy` you can use a hash to override the destination paths.
+* Use `cancel` inside a template to stop its interpolation.
 * Use `ignore "path1", "path2"` to prevent automatic copying or interpolation of files.
 
 ## Using Skeletons
