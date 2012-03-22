@@ -34,9 +34,7 @@ module Codger
       @global_settings = {
         config: {
           diff: 'diff -ur %SOURCE %DEST'
-        },
-        clones: {},
-        generators: {}
+        }
       }.with_indifferent_access
       if File.exists?(globals_path)
         @global_settings.merge! YAML.load(File.read(globals_path))
@@ -44,43 +42,22 @@ module Codger
     end
 
     # Creates a Generator, currently always a Skeleton.
-    # info should contain :git, the path/URI of the repository.
-    # Unless it contains :test, the repository will be cloned to #clones_base
-    # (if it has not been already).
-    def generator(info)
-      if location = info[:git]
-        if info[:test]
-          clone = location
-        elsif !(clone = settings[:clones][location] and File.exists?(clone))
-          FileUtils.mkdir_p clones_base
-          next_id = Dir.entries(clones_base).map(&:to_i).max + 1
-          clone = File.join(clones_base, next_id.to_s)
-          Git.clone location, clone
-          @global_settings[:clones][location] = clone
-          save_globals
+    # id can be:
+    # * a filesystem path, which will be used directly
+    # * a git uri, which will be cloned to a temporary directory
+    def generator(id)
+      if File.exists? id
+        clone = id
+        id = File.expand_path id
+      else
+        clone = Dir.mktmpdir
+        Git.clone id, clone
+        at_exit do
+          raise "I'm scared to delete #{clone}" unless clone.size > 10 # just being paranoid before rm_rf'ing
+          FileUtils.rm_rf clone
         end
-        Skeleton.new clone, info
       end
-    end
-
-    # Load a generator for the given attributes and register it
-    # in the global configuration under the given name, or its default
-    # name if name is nil.
-    def register(name, info)
-      gen = generator(info)
-      @global_settings[:generators][name || gen.name] = gen.info
-      save_globals
-    end
-
-    # Given a generator name, removes it from the config, and delete its
-    # local clone if one exists.
-    def unregister(name)
-      info = @global_settings[:generators].delete name # TODO graciously handle it not existing
-      clone = @global_settings[:clones].delete info[:git]
-      if clone and clone.start_with? clones_base # sanity check before rm_rf
-        FileUtils.rm_rf clone
-      end
-      save_globals
+      Skeleton.new clone, id
     end
 
     # Saves the tags, identifier, and params from the last run of the given generator instance
@@ -88,7 +65,7 @@ module Codger
     def record_run(generator)
       @project_settings[:runs] << {
         tags: [generator.name] + generator.tags,
-        generator: generator.info,
+        generator: generator.identifier,
         params: generator.params
       }.with_indifferent_access
       save_project
@@ -114,11 +91,6 @@ module Codger
     # Return the file where global settings should be saved - 'codger.yaml' in #codger_home.
     def globals_path
       File.join(codger_home, 'codger.yaml')
-    end
-
-    # Return the folder where skeleton clones can be saved - 'clones' in #codger_home.
-    def clones_base
-      File.join(codger_home, 'clones')
     end
 
     # Return a merged map of #global_settings and #project_settings.

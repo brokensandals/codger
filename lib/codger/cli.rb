@@ -22,36 +22,16 @@ module Codger
       end
     end
 
-    desc 'available', 'lists registered code generators'
-    def available
-      Manager.default.settings[:generators].each do |name, info|
-        puts "#{name}\t#{info.inspect}"
-      end
-    end
-
-    desc 'skeleton LOCATION', 'register a git repository as a code generator, creating a clone from the given location'
-    method_option :name, desc: 'Name you wish to refer to the skeleton by.'
-    method_option :test, desc: 'Prevent cloning or pulling of the repository. Location should be a path on the file system.'
-    def skeleton(location)
-      info = {}
-      if options[:test]
-        location = File.expand_path(location)
-        info[:test] = true
-      end
-      info[:git] = location
-      Manager.default.register options[:name], info
-    end
-
-    desc 'gen NAME [PATH]', 'run the specified generator at the given path or the current working directory'
+    desc 'gen GENERATOR [PATH]', 'run the specified generator at the given path or the current working directory'
     method_option :record, aliases: '-r', type: :boolean, desc: 'record this run in a .codger file in the directory'
-    def gen name, path='.'
+    def gen identifier, path='.'
       path = File.expand_path path
       unless File.exists? path
         FileUtils.mkdir path
         Git.init path
       end
       manager = Manager.new File.join(path, '.codger')
-      generator = manager.generator manager.settings[:generators][name]
+      generator = manager.generator identifier
       generator.run path
       manager.record_run generator if options[:record]
     end
@@ -89,11 +69,6 @@ module Codger
           generator.run Dir.pwd, info[:params]
         end
       end
-    end
-
-    desc 'unregister NAME', 'unregister a code generator and delete its clone'
-    def unregister(name)
-      Manager.default.unregister name
     end
   end
 end

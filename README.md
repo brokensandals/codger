@@ -9,11 +9,7 @@ Goals:
 
 Put the skeleton in a git repo. Before testing it, make sure to at least `git add` the files. Then:
 
-    codger skeleton path/to/your-repo-name --test
-
-Now, to create a new folder based on the skeleton:
-
-    codger gen your-repo-name new-project-name
+    codger gen path/to/your/repo path/to/new/project
 
 Here's how the skeleton repo will be used:
 
@@ -37,15 +33,11 @@ The first time a prompt is given, the skeleton repo's README will be printed (if
 
 ## Using Skeletons
 
-Register a skeleton:
-
-    codger skeleton git://example.com/boilerplate.git
-
-Run it in a new folder:
+Run in a new folder:
 
     codger gen boilerplate monumental-endeavor
 
-Or run it in the current working directory:
+Or run in the current working directory:
 
     codger gen boilerplate
 

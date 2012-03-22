@@ -27,19 +27,15 @@ module Codger
     # skeletons this is based on the last segment of the origin
     # URI or of the clone's path.
     attr_reader :name
-    # Returns the attributes used in creating this instance.
-    attr_reader :info
+    # Returns the identifier that can (hopefully) be used to locate this skeleton in the future.
+    attr_reader :identifier
 
-    # Create an instance reading from the git repository at the specified
-    # path. Options for info:
-    # git:: Canonical source for the repo; required.
-    # test:: Unless truthy, an attempt will be made to perform a 'pull' for the repository.
-    def initialize(repo, info)
-      @info = info
-      @git = Git.open(repo)
-      # https://github.com/schacon/ruby-git/issues/32
-      @git.lib.send(:command, 'pull') unless info[:test] # TODO needs to be OK if this fails
-      @name = info[:git].split('/').last.sub(/\.git\z/,'')
+    # Create an instance reading from the git repository at the specified (local)
+    # path.
+    def initialize clone, identifier
+      @identifier = identifier
+      @git = Git.open(clone)
+      @name = identifier.split('/').last.sub(/\.git\z/,'')
     end
 
     # Perform code generation using the process outlined in the class documentation.
