@@ -13,7 +13,7 @@ Put the skeleton in a git repo. Before testing it, make sure to at least `git ad
 
 Now, to create a new folder based on the skeleton:
 
-    codger create your-repo-name new-project-name
+    codger gen your-repo-name new-project-name
 
 Here's how the skeleton repo will be used:
 
@@ -43,7 +43,7 @@ Register a skeleton:
 
 Run it in a new folder:
 
-    codger create boilerplate monumental-endeavor
+    codger gen boilerplate monumental-endeavor
 
 Or run it in the current working directory:
 

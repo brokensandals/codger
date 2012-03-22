@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 require 'fileutils'
 require 'git'
 require 'thor'
@@ -40,21 +42,17 @@ module Codger
       Manager.default.register options[:name], info
     end
 
-    desc 'create NAME PATH', 'run the named generator in a new folder at the given path'
-    def create(name, path)
-      FileUtils.mkdir path
-      Git.init File.expand_path(path)
-      manager = Manager.new(File.join(path, '.codger'))
-      generator = manager.generator(manager.settings[:generators][name])
-      generator.run path, project_name: path.split('/').last
+    desc 'gen NAME [PATH]', 'run the specified generator at the given path or the current working directory'
+    def gen name, path='.'
+      path = File.expand_path path
+      unless File.exists? path
+        FileUtils.mkdir path
+        Git.init path
+      end
+      manager = Manager.new File.join(path, '.codger')
+      generator = manager.generator manager.settings[:generators][name]
+      generator.run path
       manager.record_run generator
-    end
-
-    desc 'gen NAME', 'run the named generator'
-    def gen(name)
-      generator = Manager.default.generator(Manager.default.settings[:generators][name])
-      generator.run(Dir.pwd)
-      Manager.default.record_run(generator)
     end
 
     desc 'history', 'show the actions recorded for this directory'
