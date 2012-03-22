@@ -8,6 +8,23 @@ require 'yaml'
 
 module Codger
   class CLI < Thor
+    desc 'cache GENERATOR', 'keep a local clone of the generator from the given location'
+    def cache identifier
+      Manager.default.cache identifier
+    end
+
+    desc 'cached', 'list all cached generators'
+    def cached
+      Manager.default.settings[:cached].each do |identifier, _|
+        puts identifier
+      end
+    end
+
+    desc 'uncache GENERATOR', 'remove local clone of a generator'
+    def uncache identifier
+      Manager.default.uncache identifier
+    end
+
     desc 'config [NAME [VALUE]]', 'lists, shows, or alters configuration'
     def config(name = nil, value = nil)
       if name

@@ -41,7 +41,14 @@ Or run in the current working directory:
 
     codger gen boilerplate
 
-In either case you can add the `-r` (record) option:
+### Caching
+
+    codger cache git://uri/to/boilerplate.git # stores a local clone in ~/.codger/cached
+    codger gen boilerplate # uses the local clone (but will update it first if possible)
+
+### Diffing
+
+You can add the `-r` (record) option:
 
     codger gen boilerplate -r
 
