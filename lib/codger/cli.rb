@@ -49,6 +49,7 @@ module Codger
       end
       manager = Manager.new File.join(path, '.codger')
       generator = manager.generator identifier
+      puts "Running #{generator.identifier}"
       generator.run path
       manager.record_run generator if options[:record]
     end
