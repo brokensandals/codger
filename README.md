@@ -49,7 +49,11 @@ Or run it in the current working directory:
 
     codger gen boilerplate
 
-In either case the parameters used will be recorded in a file named `.codger`, so that later, after the project or the skeleton have changed, you can use
+In either case you can add the `-r` (record) option:
+
+    codger gen boilerplate -r
+
+to have the run recorded in a file named `.codger`, so that later, after the project or the skeleton have changed, you can use
 
     codger diff
 

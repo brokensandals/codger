@@ -43,6 +43,7 @@ module Codger
     end
 
     desc 'gen NAME [PATH]', 'run the specified generator at the given path or the current working directory'
+    method_option :record, aliases: '-r', type: :boolean, desc: 'record this run in a .codger file in the directory'
     def gen name, path='.'
       path = File.expand_path path
       unless File.exists? path
@@ -52,7 +53,7 @@ module Codger
       manager = Manager.new File.join(path, '.codger')
       generator = manager.generator manager.settings[:generators][name]
       generator.run path
-      manager.record_run generator
+      manager.record_run generator if options[:record]
     end
 
     desc 'history', 'show the actions recorded for this directory'
