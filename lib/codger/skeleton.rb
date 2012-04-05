@@ -105,9 +105,9 @@ module Codger
           @current_template_src = src
           @current_template_dest = dest
           template = ERB.new(File.read(src_path(src)), nil, '-')
-          ensure_folder @current_template_dest
           result = template.result(binding)
-          File.write dest_path(@current_template_dest), result
+          ensure_folder @current_template_dest
+          File.write File.expand_path(dest_path(@current_template_dest)), result
         rescue CancelInterpolation
         end
         @to_copy.delete src

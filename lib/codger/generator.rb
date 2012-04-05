@@ -48,7 +48,7 @@ module Codger
     # Given a path relative to the output directory root, creates a folder
     # at that location if one does not yet exist.
     def ensure_folder(path)
-      FileUtils.mkdir_p(File.join(target, File.dirname(path)))
+      FileUtils.mkdir_p(File.expand_path(File.join(target, File.dirname(path))))
     end
 
     # Returns the value from the params map for the given name. If there
